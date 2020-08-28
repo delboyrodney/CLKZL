@@ -10,6 +10,13 @@
 #include <stdint.h>
 #include <iomanip>
 #include <QMessageBox>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintPreviewDialog>
+#include <QtPrintSupport/QPrintDialog>
+#include <QtPrintSupport/QPrinterInfo>
+#include <QtPrintSupport/QPrintPreviewWidget>
+#include <qpainter.h>
+#include <qpainterpath.h>
 
 using namespace std;
 
@@ -291,4 +298,56 @@ void MainWindow::on_pushButton_clicked()
     ui->label_slika->setPixmap(mpixmap);
     cout << "kraj";
     //gasenje();
+}
+
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    QPrinter *printer = new QPrinter(QPrinter::HighResolution);
+    printer->setOutputFormat(QPrinter::NativeFormat);
+    printer->setPaperSize(QPrinter::A4);
+    printer->setOrientation(QPrinter::Portrait);
+    printer->setFullPage(true);
+    printer->setResolution(100);
+ //   printer->setOutputFileName("test.pdf");
+
+    QPrintPreviewDialog ppd (printer, this);
+    ppd.setWindowTitle("Pregled Štampe");
+    connect(&ppd,SIGNAL(ppd),this,SLOT(p));
+    ppd.exec();
+
+    QPainter p (printer);
+    p.setRenderHints(QPainter::Antialiasing |
+                     QPainter::TextAntialiasing |
+                     QPainter::SmoothPixmapTransform, true);
+
+    p.setFont({"Helvetica", 16});
+    p.drawText(50, 50, "SLIKA : ");
+    p.drawPixmap(50, 80, *ui->label_slika->pixmap());
+    p.drawText(50, 450, "PODACI O GRAĐANINU : ");
+    p.setFont({"Helvetica", 12});
+    p.drawText(50, 500, "Prezime : ");
+    p.drawText(350, 500, ui->label_2->text());
+    p.drawText(50, 520, "Ime : ");
+    p.drawText(350, 520, ui->label_4->text());
+    p.drawText(50, 540, "Ime oca : ");
+    p.drawText(350, 540, ui->label_6->text());
+    p.drawText(50, 560, "Datum rođenja : ");
+    p.drawText(350, 560, ui->label_8->text());
+    p.drawText(50, 580, "Mesto rođenja, opština i država : ");
+    p.drawText(350, 580, ui->label_10->text());
+    p.drawText(50, 600, "Prebivalište i adresa stana : ");
+    p.drawText(350, 600, ui->label_12->text());
+    p.setFont({"Helvetica", 16});
+    p.drawText(50, 650, "PODACI O DOKUMENTU : ");
+    p.setFont({"Helvetica", 12});
+    p.drawText(50, 700, "Dokument izdaje : ");
+    p.drawText(350, 700, ui->label_20->text());
+    p.drawText(50, 720, "Broj dokumenta : ");
+    p.drawText(350, 720, ui->label_22->text());
+    p.drawText(50, 740, "Datum izdavanja : ");
+    p.drawText(350, 740, ui->label_24->text());
+    p.drawText(50, 760, "Važi do : ");
+    p.drawText(350, 760, ui->label_26->text());
+    p.end();
 }
