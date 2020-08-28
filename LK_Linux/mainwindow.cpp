@@ -311,7 +311,7 @@ void MainWindow::on_pushButton_2_clicked()
     printer->setResolution(100);
  //   printer->setOutputFileName("test.pdf");
 
-    QPrintPreviewDialog ppd (printer, this);
+    QPrintDialog ppd (printer, this);
     ppd.setWindowTitle("Pregled Štampe");
     connect(&ppd,SIGNAL(ppd),this,SLOT(p));
     ppd.exec();
@@ -322,9 +322,13 @@ void MainWindow::on_pushButton_2_clicked()
                      QPainter::SmoothPixmapTransform, true);
 
     p.setFont({"Helvetica", 16});
+    p.drawLine(50, 30, 780, 30);
     p.drawText(50, 50, "SLIKA : ");
+    p.drawLine(50, 54, 780, 54);
     p.drawPixmap(50, 80, *ui->label_slika->pixmap());
+    p.drawLine(50, 430, 780, 430);
     p.drawText(50, 450, "PODACI O GRAĐANINU : ");
+    p.drawLine(50, 454, 780, 454);
     p.setFont({"Helvetica", 12});
     p.drawText(50, 500, "Prezime : ");
     p.drawText(350, 500, ui->label_2->text());
@@ -338,16 +342,24 @@ void MainWindow::on_pushButton_2_clicked()
     p.drawText(350, 580, ui->label_10->text());
     p.drawText(50, 600, "Prebivalište i adresa stana : ");
     p.drawText(350, 600, ui->label_12->text());
+    p.drawText(50, 620, "Datum promene adrese : ");
+    p.drawText(350, 620, ui->label_14->text());
+    p.drawText(50, 640, "JMBG : ");
+    p.drawText(350, 640, ui->label_16->text());
+    p.drawText(50, 660, "Pol : ");
+    p.drawText(350, 660, ui->label_18->text());
     p.setFont({"Helvetica", 16});
-    p.drawText(50, 650, "PODACI O DOKUMENTU : ");
+    p.drawLine(50, 690, 780, 690);
+    p.drawText(50, 710, "PODACI O DOKUMENTU : ");
+    p.drawLine(50, 714, 780, 714);
     p.setFont({"Helvetica", 12});
-    p.drawText(50, 700, "Dokument izdaje : ");
-    p.drawText(350, 700, ui->label_20->text());
-    p.drawText(50, 720, "Broj dokumenta : ");
-    p.drawText(350, 720, ui->label_22->text());
-    p.drawText(50, 740, "Datum izdavanja : ");
-    p.drawText(350, 740, ui->label_24->text());
-    p.drawText(50, 760, "Važi do : ");
-    p.drawText(350, 760, ui->label_26->text());
+    p.drawText(50, 760, "Dokument izdaje : ");
+    p.drawText(350, 760, ui->label_20->text());
+    p.drawText(50, 780, "Broj dokumenta : ");
+    p.drawText(350, 780, ui->label_22->text());
+    p.drawText(50, 800, "Datum izdavanja : ");
+    p.drawText(350, 800, ui->label_24->text());
+    p.drawText(50, 820, "Važi do : ");
+    p.drawText(350, 820, ui->label_26->text());
     p.end();
 }
