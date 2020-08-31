@@ -16,7 +16,6 @@
 #include <QtPrintSupport/QPrinterInfo>
 #include <QtPrintSupport/QPrintPreviewWidget>
 #include <qpainter.h>
-#include <qpainterpath.h>
 
 using namespace std;
 
@@ -221,13 +220,6 @@ string ReplaceString(std::string subject, const std::string& search, const std::
     return subject;
 }
 
-//string gasenje()
-//{
-//    using namespace vars;
-//    rv = SCardDisconnect(hCard, SCARD_UNPOWER_CARD);
-//}
-
-
 void MainWindow::on_pushButton_clicked()
 {
     unsigned char podok [4] = { 0x02, 0x0f, 0x02, 0x06 };
@@ -299,7 +291,6 @@ void MainWindow::on_pushButton_clicked()
     cout << "kraj";
     //gasenje();
 }
-
 
 void MainWindow::on_pushButton_2_clicked()
 {
