@@ -16,6 +16,7 @@
 #include <QtPrintSupport/QPrinterInfo>
 #include <QtPrintSupport/QPrintPreviewWidget>
 #include <qpainter.h>
+#include <QDate>
 
 using namespace std;
 
@@ -220,6 +221,14 @@ string ReplaceString(std::string subject, const std::string& search, const std::
     return subject;
 }
 
+QString formatiranje(string f)
+{
+f.insert(2, ".");
+f.insert(5, ".");
+QString fmt = &f[0];
+return fmt;
+}
+
 void MainWindow::on_pushButton_clicked()
 {
     unsigned char podok [4] = { 0x02, 0x0f, 0x02, 0x06 };
@@ -239,8 +248,8 @@ void MainWindow::on_pushButton_clicked()
     string* flabels;
     flabels = sortiranje(datapod);
     ui->label_22->setText(conv(flabels[0]));
-    ui->label_24->setText(conv(flabels[4]));
-    ui->label_26->setText(conv(flabels[5]));
+    ui->label_24->setText(formatiranje(conv(flabels[4])));
+    ui->label_26->setText(formatiranje(conv(flabels[5])));
     ui->label_20->setText(conv(flabels[6]));
 
     datalp = citanje(licpod, reading);     // lični podaci
@@ -256,7 +265,7 @@ void MainWindow::on_pushButton_clicked()
     ui->label_2->setText(conv(flabelsl[1]));
     ui->label_4->setText(conv(flabelsl[2]));
     ui->label_6->setText(conv(flabelsl[3]));
-    ui->label_8->setText(conv(flabelsl[8]));
+    ui->label_8->setText(formatiranje(conv(flabelsl[8])));
     ui->label_18->setText(conv(flabelsl[4]));
     ui->label_16->setText(conv(flabelsl[0]));
     ui->label_10->setText(conv(mestor.str()));
@@ -282,75 +291,82 @@ void MainWindow::on_pushButton_clicked()
     data = citanje(slika, reading);     //slika
     string sub ("\x90\0", 2);
     datasl = eraseAllSubStr(data, sub);
-//    datasl.append("\xff\xd9");
     datasl.erase(0,2);
     QByteArray dataslk = QByteArray::fromStdString(datasl);
     QPixmap mpixmap;
     mpixmap.loadFromData(dataslk,"JPG");
     ui->label_slika->setPixmap(mpixmap);
-    cout << "kraj";
-    //gasenje();
+    cout << "Uspešno pročitana lična karta";
 }
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::print(QPrinter* prt)
 {
-    QPrinter *printer = new QPrinter(QPrinter::HighResolution);
-    printer->setOutputFormat(QPrinter::NativeFormat);
-    printer->setPaperSize(QPrinter::A4);
-    printer->setOrientation(QPrinter::Portrait);
-    printer->setFullPage(true);
-    printer->setResolution(100);
- //   printer->setOutputFileName("test.pdf");
-
-    QPrintDialog ppd (printer, this);
-    ppd.setWindowTitle("Pregled Štampe");
-    connect(&ppd,SIGNAL(ppd),this,SLOT(p));
-    ppd.exec();
-
-    QPainter p (printer);
+    QDate datum = QDate::currentDate();
+    QString dat = datum.toString("dd.MM.yyyy");
+    QPainter p (prt);
+    QPixmap slika = ui->label_slika->pixmap(Qt::ReturnByValue);
     p.setRenderHints(QPainter::Antialiasing |
                      QPainter::TextAntialiasing |
                      QPainter::SmoothPixmapTransform, true);
 
     p.setFont({"Helvetica", 16});
-    p.drawLine(50, 30, 780, 30);
-    p.drawText(50, 50, "SLIKA : ");
-    p.drawLine(50, 54, 780, 54);
-    p.drawPixmap(50, 80, *ui->label_slika->pixmap());
-    p.drawLine(50, 430, 780, 430);
-    p.drawText(50, 450, "PODACI O GRAĐANINU : ");
-    p.drawLine(50, 454, 780, 454);
+    p.drawLine(50, 50, 780, 50);
+    p.drawText(50, 70, "SLIKA : ");
+    p.drawLine(50, 74, 780, 74);
+    p.drawPixmap(50, 80, slika);
+    p.drawLine(50, 450, 780, 450);
+    p.drawText(50, 470, "PODACI O GRAĐANINU : ");
+    p.drawLine(50, 474, 780, 474);
     p.setFont({"Helvetica", 12});
-    p.drawText(50, 500, "Prezime : ");
-    p.drawText(350, 500, ui->label_2->text());
-    p.drawText(50, 520, "Ime : ");
-    p.drawText(350, 520, ui->label_4->text());
-    p.drawText(50, 540, "Ime oca : ");
-    p.drawText(350, 540, ui->label_6->text());
-    p.drawText(50, 560, "Datum rođenja : ");
-    p.drawText(350, 560, ui->label_8->text());
-    p.drawText(50, 580, "Mesto rođenja, opština i država : ");
-    p.drawText(350, 580, ui->label_10->text());
-    p.drawText(50, 600, "Prebivalište i adresa stana : ");
-    p.drawText(350, 600, ui->label_12->text());
-    p.drawText(50, 620, "Datum promene adrese : ");
-    p.drawText(350, 620, ui->label_14->text());
-    p.drawText(50, 640, "JMBG : ");
-    p.drawText(350, 640, ui->label_16->text());
-    p.drawText(50, 660, "Pol : ");
-    p.drawText(350, 660, ui->label_18->text());
+    p.drawText(50, 520, "Prezime : ");
+    p.drawText(350, 520, ui->label_2->text());
+    p.drawText(50, 540, "Ime : ");
+    p.drawText(350, 540, ui->label_4->text());
+    p.drawText(50, 560, "Ime oca : ");
+    p.drawText(350, 560, ui->label_6->text());
+    p.drawText(50, 580, "Datum rođenja : ");
+    p.drawText(350, 580, ui->label_8->text());
+    p.drawText(50, 600, "Mesto rođenja, opština i država : ");
+    p.drawText(350, 600, ui->label_10->text());
+    p.drawText(50, 620, "Prebivalište i adresa stana : ");
+    p.drawText(350, 620, ui->label_12->text());
+    p.drawText(50, 640, "Datum promene adrese : ");
+    p.drawText(350, 640, ui->label_14->text());
+    p.drawText(50, 660, "JMBG : ");
+    p.drawText(350, 660, ui->label_16->text());
+    p.drawText(50, 680, "Pol : ");
+    p.drawText(350, 680, ui->label_18->text());
     p.setFont({"Helvetica", 16});
-    p.drawLine(50, 690, 780, 690);
-    p.drawText(50, 710, "PODACI O DOKUMENTU : ");
-    p.drawLine(50, 714, 780, 714);
+    p.drawLine(50, 710, 780, 710);
+    p.drawText(50, 730, "PODACI O DOKUMENTU : ");
+    p.drawLine(50, 734, 780, 734);
     p.setFont({"Helvetica", 12});
-    p.drawText(50, 760, "Dokument izdaje : ");
-    p.drawText(350, 760, ui->label_20->text());
-    p.drawText(50, 780, "Broj dokumenta : ");
-    p.drawText(350, 780, ui->label_22->text());
-    p.drawText(50, 800, "Datum izdavanja : ");
-    p.drawText(350, 800, ui->label_24->text());
-    p.drawText(50, 820, "Važi do : ");
-    p.drawText(350, 820, ui->label_26->text());
+    p.drawText(50, 780, "Dokument izdaje : ");
+    p.drawText(350, 780, ui->label_20->text());
+    p.drawText(50, 800, "Broj dokumenta : ");
+    p.drawText(350, 800, ui->label_22->text());
+    p.drawText(50, 820, "Datum izdavanja : ");
+    p.drawText(350, 820, ui->label_24->text());
+    p.drawText(50, 840, "Važi do : ");
+    p.drawText(350, 840, ui->label_26->text());
+    p.drawLine(50, 870, 780, 870);
+    p.drawText(50, 900, "Datum štampe : ");
+    p.drawText(180, 900, dat);
     p.end();
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    QPrinter printer;
+    printer.setOutputFormat(QPrinter::NativeFormat);
+    printer.setPaperSize(QPrinter::A4);
+    printer.setOrientation(QPrinter::Portrait);
+    printer.setFullPage(true);
+    printer.setResolution(100);
+ //   printer->setOutputFileName("test.pdf");
+
+    QPrintPreviewDialog *ppd = new QPrintPreviewDialog (&printer);
+    ppd->setWindowTitle("Pregled Štampe");
+    connect(ppd,SIGNAL(paintRequested(QPrinter*)),this,SLOT(print(QPrinter*)));
+    ppd->exec();
 }
