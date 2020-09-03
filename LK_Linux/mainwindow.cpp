@@ -305,6 +305,7 @@ void MainWindow::print(QPrinter* prt)
     QString dat = datum.toString("dd.MM.yyyy");
     QPainter p (prt);
     QPixmap slika = ui->label_slika->pixmap(Qt::ReturnByValue);
+//  QPixmap slika = *ui->label_slika->pixmap();
     p.setRenderHints(QPainter::Antialiasing |
                      QPainter::TextAntialiasing |
                      QPainter::SmoothPixmapTransform, true);
