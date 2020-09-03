@@ -312,9 +312,9 @@ void MainWindow::print(QPrinter* prt)
 
     p.setFont({"Helvetica", 16});
     p.drawLine(50, 50, 780, 50);
-    p.drawText(50, 70, "SLIKA : ");
-    p.drawLine(50, 74, 780, 74);
-    p.drawPixmap(50, 80, slika);
+    p.drawText(250, 74, "ČITAČ LIČNE KARTE ZA LINUX");
+    p.drawLine(50, 78, 780, 78);
+    p.drawPixmap(50, 84, slika);
     p.drawLine(50, 450, 780, 450);
     p.drawText(50, 470, "PODACI O GRAĐANINU : ");
     p.drawLine(50, 474, 780, 474);
